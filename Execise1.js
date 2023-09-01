@@ -4,6 +4,18 @@
 
 //Book Object Creation
 function CreatBooks(title, author, isbn,) {
+    if(typeof title != "string" || title == ''){
+        console.log("Please Enter Valid Book Title");
+        return;
+    }
+    if(typeof author != "string" || author == ''){
+        console.log("Please Enter Valid Author");
+        return;
+    }
+    if(typeof isbn != "string" || isbn == '' || isbn.length !== 9){
+        console.log("Please Enter Valid isbn");
+    }
+
     return {
         title: title,
         author: author,
@@ -41,25 +53,41 @@ function checkoutBook(isbn) {
     const book = library.find(function (book) {
         return book.isbn === isbn;
     })
-    if (book) {
-        if (book.checkedOut) {
-            console.log(`the book is already checked out: ${book.title}`);
-        } else {
-            book.checkedOut = true;
-            console.log(book);
-        }
-    }
-    else if (typeof isbn !== 'string' || isbn.length !== 9) {
+    if (typeof isbn !== 'string' || isbn.length !== 9) {
         console.log("Invalid Isbn")
     }
-    else {
+    else if(!book){
         console.log("book is not found");
     }
+    else if(book.checkedOut){
+        console.log(`the book is already checked out: ${book.title}`);
+    }
+    else{
+        book.checkedOut = true;
+        console.log(book);
+    }
 }
-checkoutBook("123-456-3");
-checkoutBook("123-456-8");
-checkoutBook("123-456-3");
-checkoutBook("123-456-30");
+
+//     if (book) {
+//         if (book.checkedOut) {
+//             console.log(`the book is already checked out: ${book.title}`);
+//         } else {
+//             book.checkedOut = true;
+//             console.log(book);
+//         }
+//     }
+//     else if (typeof isbn !== 'string' || isbn.length !== 9) {
+//         console.log("Invalid Isbn")
+//     }
+//     else {
+//         console.log("book is not found");
+//     }
+// }
+console.log("checkoutBook:");
+checkoutBook("123-456-3");   //{  title: 'An Equal Music', author: 'Vikram Seth', isbn: '123-456-3', checkedOut: true}
+checkoutBook("123-456-8");   //book is not found
+checkoutBook("123-456-3");   //the book is already checked out: An Equal Music
+checkoutBook("123-456-30");  //Invalid Isbn
 
 //return book
 
@@ -67,29 +95,44 @@ function returnBook(isbn) {
     const book = library.find(function (book) {
         return book.isbn === isbn;
     })
-    if (book) {
-        if (book.checkedOut) {
-            book.checkedOut = false;
-            console.log("This book is returned")
-            console.log(book);
-        } 
-        else {
-            console.log(`This Book is already Returned: ${book.title}`)
-        }
-    }
-    else if (typeof isbn !== 'string' || isbn.length !== 9) {
+    if (typeof isbn !== 'string' || isbn.length !== 9) {
         console.log("Invalid Isbn")
     }
-    else {
+    else if(!book){
         console.log("book is not found");
     }
+    else if(book.checkedOut){
+        book.checkedOut = false;
+             console.log("This book is returned")
+             console.log(book);
+    }
+    else{
+        console.log(`the book is already Returned : ${book.title}`);
+    }
+    // if (book) {
+    //     if (book.checkedOut) {
+    //         book.checkedOut = false;
+    //         console.log("This book is returned")
+    //         console.log(book);
+    //     } 
+    //     else {
+    //         console.log(`This Book is already Returned: ${book.title}`)
+    //     }
+    // }
+    // else if (typeof isbn !== 'string' || isbn.length !== 9) {
+    //     console.log("Invalid Isbn")
+    // }
+    // else {
+    //     console.log("book is not found");
+    // }
 
 }
 
-returnBook("123-456-3");
-returnBook("123-456-2");
-returnBook("123-456-3");
-returnBook("123-456-20");
+console.log("returnBook: ");
+returnBook("123-456-3");   //This book is returned   {  title: 'An Equal Music', author: 'Vikram Seth', isbn: '123-456-3', checkedOut: false}
+returnBook("123-456-2");   //This Book is already Returned: A Sense of Time
+returnBook("123-456-3");   //This Book is already Returned: An Equal Music
+returnBook("123-456-20");  //Invalid Isbn
 
 //Find Book By Author:
 function findBooksByAuthor(author){
@@ -105,5 +148,6 @@ function findBooksByAuthor(author){
     }
 }
 
-findBooksByAuthor("Sunny Days");
-findBooksByAuthor("Sakshi");
+console.log("findBooksByAuthor:")
+findBooksByAuthor("Sunny Days");   //The Book is: { title: 'Sunny Days', author: 'Sunny Days', isbn: '123-456-6', checkedOut: false }
+findBooksByAuthor("Sakshi");   //Book is Not AVailable
