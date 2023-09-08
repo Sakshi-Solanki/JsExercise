@@ -4,15 +4,15 @@
 
 //Book Object Creation
 function CreatBooks(title, author, isbn,) {
-    if(typeof title != "string" || title == ''){
+    if (typeof title != "string" || title == '') {
         console.log("Please Enter Valid Book Title");
         return;
     }
-    if(typeof author != "string" || author == ''){
+    if (typeof author != "string" || author == '') {
         console.log("Please Enter Valid Author");
         return;
     }
-    if(typeof isbn != "string" || isbn == '' || isbn.length !== 9){
+    if (typeof isbn != "string" || isbn == '' || isbn.length !== 9) {
         console.log("Please Enter Valid isbn");
     }
 
@@ -40,7 +40,17 @@ console.log(library);
 
 //Add Books: using function "addBookToLibrary"
 function addBookToLibrary(book) {
+    if (library.includes(book)) {
+        console.log(`${book.title} is already exists`);
+        return;
+    }
+    const dupIsbn = library.find(dupIsbn => dupIsbn.isbn === book.isbn);
+    if (dupIsbn) {
+        console.log(`A book with ISBN ${book.isbn} is already exists`);
+        return;
+    }
     library.push(book);
+    return;
 }
 
 let book5 = CreatBooks("My Days", "R.K.Narayan", "123-456-5");
@@ -60,10 +70,10 @@ function checkoutBook(isbn, daysToReturn = 14) {
     if (typeof isbn !== 'string' || isbn.length !== 9) {
         console.log("Invalid Isbn")
     }
-    else if(!book){
+    else if (!book) {
         console.log("book is not found");
     }
-    else if(book.checkoutCount == Max_CheckOut){
+    else if (book.checkoutCount == Max_CheckOut) {
         console.log(`${book.title} has reached the maximum number of checkOuts!!`)
     }
     else {
@@ -76,7 +86,7 @@ function checkoutBook(isbn, daysToReturn = 14) {
     }
 }
 
-function listOverdueBooks(){
+function listOverdueBooks() {
     const currentDate = new Date();
     const overdueBooks = library.filter(book => book.checkedOut && book.dueDate < currentDate);
     return overdueBooks;
@@ -100,15 +110,15 @@ function returnBook(isbn) {
     if (typeof isbn !== 'string' || isbn.length !== 9) {
         console.log("Invalid Isbn")
     }
-    else if(!book){
+    else if (!book) {
         console.log("book is not found");
     }
-    else if(book.checkedOut){
+    else if (book.checkedOut) {
         book.checkedOut = false;
-             console.log("This book is returned")
-             console.log(book);
+        console.log("This book is returned")
+        console.log(book);
     }
-    else{
+    else {
         console.log(`the book is already Returned : ${book.title}`);
     }
 }
@@ -120,15 +130,15 @@ returnBook("123-456-3");   //This Book is already Returned: An Equal Music
 returnBook("123-456-20");  //Invalid Isbn
 
 //Find Book By Author:
-function findBooksByAuthor(author){
-    const book = library.find(function (book){
+function findBooksByAuthor(author) {
+    const book = library.find(function (book) {
         return book.author === author;
     })
-    if(book){
+    if (book) {
         console.log("The Book is:")
         console.log(book)
     }
-    else{
+    else {
         console.log("Book is Not AVailable")
     }
 }
@@ -138,19 +148,19 @@ findBooksByAuthor("Sunny Days");   //The Book is: { title: 'Sunny Days', author:
 findBooksByAuthor("Sakshi");   //Book is Not AVailable
 
 //rate a book
-function rateBook(isbn, rating){
+function rateBook(isbn, rating) {
     const book = library.find(book => book.isbn === isbn);
     if (typeof isbn !== 'string' || isbn.length !== 9) {
         console.log("Invalid Isbn")
     }
-    else if(rating >=1 && rating <= 5){
+    else if (rating >= 1 && rating <= 5) {
         book.rating.push(rating);
         console.log(`Rating of ${rating} added to ${book.title}.`)
     }
-    else if(rating <=1 || rating >=5){
+    else if (rating <= 1 || rating >= 5) {
         console.log("rating must be between 1 to 5");
     }
-    else{
+    else {
         console.log("book is not found");
     }
 }
@@ -164,20 +174,67 @@ function getAverageRating(isbn) {
     if (typeof isbn !== 'string' || isbn.length !== 9) {
         console.log("Invalid Isbn");
     }
-    else if(!book){
+    else if (!book) {
         console.log("book is not exist in the library");
     }
-    else{
+    else {
         const rating = book.rating;
-        if(rating.length > 0){
+        if (rating.length > 0) {
             const sum = rating.reduce((acc, rating) => acc + rating, 0);
-            return sum / rating.length;
-    }    else{
-         return 0;
+            return (sum / rating.length).toFixed(1);
+        } else {
+            return 0;
+        }
     }
-}
 }
 
 rateBook("123-456-3", 5)    //Rating of 5 added to An Equal Music.
-rateBook("123-456-3", 4)    //Rating of 4 added to An Equal Music.
-console.log(getAverageRating("123-456-3"));   //4.5
+rateBook("123-456-3", 6)    //rating must be between 1 to 5
+rateBook("123-456-3", 3.5)
+console.log(getAverageRating("123-456-3"));   //4.3
+
+//searchBooks(query)
+function searchBooks(query) {
+    if (typeof query != "string") {
+        console.log("query must be a string");
+        return;
+    }
+
+    query = query.toLowerCase();
+    const matchBook = library.filter(book => {
+        const title = book.title.toLowerCase();
+        const author = book.author.toLowerCase();
+
+        return title.includes(query) || author.includes(query);
+    });
+    if (matchBook.length === 0) {
+        console.log(`No books found for "${query}"`);
+    }
+
+    return console.log(matchBook);
+}
+
+searchBooks("sakshi");    //No books found for "sakshi"     
+searchBooks(123);         //query must be a string
+searchBooks("sunny");
+
+//sortLibrary
+
+function sortLibrary(criteria){
+    const comapare = {
+        title: (book1, book2) => (book1.title).localeCompare(book2.title),
+        author: (book1, book2) => (book1.author).localeCompare(book2.author),
+        averageRating: (book1, book2) => getAverageRating(book1.isbn) - getAverageRating(book2.isbn)
+    };
+
+    if(criteria in comapare){
+        library.sort(comapare[criteria]);
+        console.log(`Library Sorted By ${criteria}: `);
+        console.log(library);
+    }
+    else{
+        console.log("Invalid Sorting Criteria");
+    }
+}
+
+sortLibrary("title");
