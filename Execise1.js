@@ -238,3 +238,22 @@ function sortLibrary(criteria){
 }
 
 sortLibrary("title");
+
+//Save Library in Local Storage
+function saveLibrary() {
+    localStorage.setItem('library', JSON.stringify(library));
+    console.log("Library has been saved to localStorage!!")
+}
+
+//Load Libaray from the Local Storage
+function loadLibrary() {
+    const stroedLibrary = localStorage.getItem('library');
+    if(stroedLibrary) {
+        library = JSON.parse(stroedLibrary);
+        console.log("Library has been loaded from localStorage!!");
+    }
+    else{
+        console.log("Library not found in localStorage!!")
+    }
+}
+
